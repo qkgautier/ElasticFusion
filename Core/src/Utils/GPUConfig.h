@@ -115,6 +115,11 @@ class GPUConfig
             rgbResMap["GeForce GTX 1070"] = std::pair<int, int>(256, 464);
             so3StepMap["GeForce GTX 1070"] = std::pair<int, int>(256, 48);
 
+	    icpStepMap["Quadro K1000M"] = std::pair<int, int>(128, 16);
+	    rgbStepMap["Quadro K1000M"] = std::pair<int, int>(160, 16);
+	    rgbResMap["Quadro K1000M"] = std::pair<int, int>(128, 16);
+	    so3StepMap["Quadro K1000M"] = std::pair<int, int>(256, 16);
+
             if(icpStepMap.find(dev) == icpStepMap.end())
             {
                 std::stringstream strs;
