@@ -21,4 +21,6 @@ class CameraInterface
 
       virtual void setAutoExposure(bool value) = 0;
       virtual void setAutoWhiteBalance(bool value) = 0;
+      virtual bool hasIntrinsics(){ return false; }
+      virtual void getIntrinsics(float& cx, float& cy, float& fx, float& fy){}
 };

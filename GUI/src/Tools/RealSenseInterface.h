@@ -125,7 +125,17 @@ public:
     std::pair<uint8_t *,int64_t> * rgbBuffers;
     std::pair<std::pair<uint8_t *,uint8_t *>,int64_t> * frameBuffers;
   };
-#endif
+
+  virtual bool hasIntrinsics(){ return true; }
+  virtual void getIntrinsics(float& cx, float& cy, float& fx, float& fy)
+  {
+	  fx = depth_intr.fx;
+	  fy = depth_intr.fy;
+	  cx = depth_intr.ppx;
+	  cy = depth_intr.ppy;
+  }
+
+  #endif
 
 private:
 #ifdef WITH_REALSENSE
@@ -136,6 +146,7 @@ private:
 #else
   rs::context * ctx;
 #endif
+  rs::intrinsics depth_intr;
 
   RGBCallback * rgbCallback;
   DepthCallback * depthCallback;

@@ -36,6 +36,9 @@ RealSenseInterface::RealSenseInterface(int inWidth, int inHeight, int inFps, con
   dev->enable_stream(rs::stream::depth,width,height,rs::format::z16,fps);
   dev->enable_stream(rs::stream::color,width,height,rs::format::rgb8,fps);
 
+
+  depth_intr = dev->get_stream_intrinsics(rs::stream::depth);
+
   latestDepthIndex.assign(-1);
   latestRgbIndex.assign(-1);
 

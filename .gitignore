@@ -2,4 +2,5 @@ build/
 deps/
 .project
 .cproject
+.settings
 *.user

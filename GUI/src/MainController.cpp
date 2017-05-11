@@ -31,19 +31,9 @@ MainController::MainController(int argc, char * argv[])
     std::string empty;
     iclnuim = Parse::get().arg(argc, argv, "-icl", empty) > -1;
 
-    std::string calibrationFile;
-    Parse::get().arg(argc, argv, "-cal", calibrationFile);
-
+    // TODO adjust resolution
     Resolution::getInstance(640, 480);
 
-    if(calibrationFile.length())
-    {
-        loadCalibration(calibrationFile);
-    }
-    else
-    {
-        Intrinsics::getInstance(528, 528, 320, 240);
-    }
 
     Parse::get().arg(argc, argv, "-l", logFile);
 
@@ -52,7 +42,6 @@ MainController::MainController(int argc, char * argv[])
 
     std::string playbackFile;
     Parse::get().arg(argc, argv, "-rsp", playbackFile);
-
 
     if(logFile.length())
     {
@@ -76,6 +65,39 @@ MainController::MainController(int argc, char * argv[])
         }
 #endif
     }
+
+    CameraInterface* cam = 0;
+    LiveLogReader* liveReader = dynamic_cast<LiveLogReader*>(logReader);
+    bool cameraHasIntrinsics = false;
+    if(liveReader)
+    {
+    	cam = liveReader->cam;
+    	cameraHasIntrinsics = cam->hasIntrinsics();
+    }
+
+    // Calibration
+    std::string calibrationFile;
+    Parse::get().arg(argc, argv, "-cal", calibrationFile);
+
+    if(calibrationFile.length())
+    {
+        loadCalibration(calibrationFile);
+    }
+    else if(cameraHasIntrinsics)
+    {
+    	float cx, cy, fx, fy;
+    	cam->getIntrinsics(cx, cy, fx, fy);
+        Intrinsics::getInstance(fx, fy, cx, cy);
+        std::cout << fx << " " << fy << " " << cx << " " << cy << std::endl;
+    }
+    else
+    {
+        Intrinsics::getInstance(528, 528, 320, 240);
+    }
+
+
+
+
 
     if(Parse::get().arg(argc, argv, "-p", poseFile) > 0)
     {
