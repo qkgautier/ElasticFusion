@@ -48,7 +48,10 @@ MainController::MainController(int argc, char * argv[])
     Parse::get().arg(argc, argv, "-l", logFile);
 
     std::string recordFile;
-    Parse::get().arg(argc, argv, "-rec", recordFile);
+    Parse::get().arg(argc, argv, "-rsr", recordFile);
+
+    std::string playbackFile;
+    Parse::get().arg(argc, argv, "-rsp", playbackFile);
 
 
     if(logFile.length())
@@ -67,7 +70,7 @@ MainController::MainController(int argc, char * argv[])
         if(!good)
         {
           delete logReader;
-          logReader = new LiveLogReader(logFile, flipColors, LiveLogReader::CameraType::RealSense, recordFile);
+          logReader = new LiveLogReader(playbackFile, flipColors, LiveLogReader::CameraType::RealSense, recordFile);
 
           good = ((LiveLogReader *)logReader)->cam->ok();
         }
