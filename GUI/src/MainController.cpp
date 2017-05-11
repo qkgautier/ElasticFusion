@@ -47,6 +47,10 @@ MainController::MainController(int argc, char * argv[])
 
     Parse::get().arg(argc, argv, "-l", logFile);
 
+    std::string recordFile;
+    Parse::get().arg(argc, argv, "-rec", recordFile);
+
+
     if(logFile.length())
     {
         logReader = new RawLogReader(logFile, Parse::get().arg(argc, argv, "-f", empty) > -1);
@@ -59,10 +63,11 @@ MainController::MainController(int argc, char * argv[])
         good = ((LiveLogReader *)logReader)->cam->ok();
 
 #ifdef WITH_REALSENSE
+
         if(!good)
         {
           delete logReader;
-          logReader = new LiveLogReader(logFile, flipColors, LiveLogReader::CameraType::RealSense);
+          logReader = new LiveLogReader(logFile, flipColors, LiveLogReader::CameraType::RealSense, recordFile);
 
           good = ((LiveLogReader *)logReader)->cam->ok();
         }

@@ -9,13 +9,17 @@
 #include "librealsense/rs.hpp"
 #endif
 
+#ifdef WITH_REALSENSE_SDK
+#include <rs_sdk.h>
+#endif
+
 #include "ThreadMutexObject.h"
 #include "CameraInterface.h"
 
 class RealSenseInterface : public CameraInterface
 {
 public:
-  RealSenseInterface(int width = 640,int height = 480,int fps = 30);
+  RealSenseInterface(int width = 640, int height = 480, int fps = 30, const char* outFile = 0, const char* inFile = 0);
   virtual ~RealSenseInterface();
 
   const int width,height,fps;
@@ -125,8 +129,13 @@ public:
 
 private:
 #ifdef WITH_REALSENSE
-  rs::device *dev;
-  rs::context ctx;
+  rs::device * dev;
+
+#ifdef WITH_REALSENSE_SDK
+  rs::core::context_interface * ctx;
+#else
+  rs::context * ctx;
+#endif
 
   RGBCallback * rgbCallback;
   DepthCallback * depthCallback;

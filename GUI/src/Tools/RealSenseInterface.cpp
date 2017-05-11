@@ -2,21 +2,37 @@
 #include <functional>
 
 #ifdef WITH_REALSENSE
-RealSenseInterface::RealSenseInterface(int inWidth,int inHeight,int inFps)
+RealSenseInterface::RealSenseInterface(int inWidth, int inHeight, int inFps, const char* outFile, const char* inFile)
   : width(inWidth),
   height(inHeight),
   fps(inFps),
   dev(nullptr),
   initSuccessful(true)
 {
-  if(ctx.get_device_count() == 0)
+#ifdef WITH_REALSENSE_SDK
+  if(outFile)
+  {
+    ctx = new rs::record::context(outFile);
+  }
+  else if(inFile)
+  {
+    ctx = new rs::playback::context(inFile);
+  }
+  else
+  {
+    ctx = new rs::core::context();
+  }
+#else
+  ctx = new rs::context();
+#endif
+  if(ctx->get_device_count() == 0)
   {
     errorText = "No device connected.";
     initSuccessful = false;
     return;
   }
 
-  dev = ctx.get_device(0);
+  dev = ctx->get_device(0);
   dev->enable_stream(rs::stream::depth,width,height,rs::format::z16,fps);
   dev->enable_stream(rs::stream::color,width,height,rs::format::rgb8,fps);
 
@@ -75,6 +91,7 @@ RealSenseInterface::~RealSenseInterface()
     delete rgbCallback;
     delete depthCallback;
   }
+  delete ctx;
 }
 
 void RealSenseInterface::setAutoExposure(bool value)

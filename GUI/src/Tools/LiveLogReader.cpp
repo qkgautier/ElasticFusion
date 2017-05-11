@@ -21,7 +21,7 @@
 #include "OpenNI2Interface.h"
 #include "RealSenseInterface.h"
 
-LiveLogReader::LiveLogReader(std::string file, bool flipColors, CameraType type)
+LiveLogReader::LiveLogReader(std::string file, bool flipColors, CameraType type, std::string outFile)
  : LogReader(file, flipColors),
    lastFrameTime(-1),
    lastGot(-1)
@@ -31,7 +31,8 @@ LiveLogReader::LiveLogReader(std::string file, bool flipColors, CameraType type)
     if(type == CameraType::OpenNI2)
       cam = new OpenNI2Interface(Resolution::getInstance().width(),Resolution::getInstance().height());
     else if(type == CameraType::RealSense)
-      cam = new RealSenseInterface(Resolution::getInstance().width(), Resolution::getInstance().height());
+      cam = new RealSenseInterface(Resolution::getInstance().width(), Resolution::getInstance().height(), 30,
+    		  outFile.empty()? 0: outFile.c_str(), file.empty()? 0: file.c_str());
     else
       cam = nullptr;
 
