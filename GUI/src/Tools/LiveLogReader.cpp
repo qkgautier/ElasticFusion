@@ -32,7 +32,10 @@ LiveLogReader::LiveLogReader(std::string file, bool flipColors, CameraType type,
       cam = new OpenNI2Interface(Resolution::getInstance().width(),Resolution::getInstance().height());
     else if(type == CameraType::RealSense)
       cam = new RealSenseInterface(Resolution::getInstance().width(), Resolution::getInstance().height(), 30,
-    		  outFile.empty()? 0: outFile.c_str(), file.empty()? 0: file.c_str());
+    		  outFile.empty()? 0: outFile.c_str(), file.empty()? 0: file.c_str(), false);
+    else if(type == CameraType::RealSenseSlam)
+      cam = new RealSenseInterface(Resolution::getInstance().width(), Resolution::getInstance().height(), 30,
+    		  outFile.empty()? 0: outFile.c_str(), file.empty()? 0: file.c_str(), true);
     else
       cam = nullptr;
 

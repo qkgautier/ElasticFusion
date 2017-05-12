@@ -31,8 +31,14 @@ MainController::MainController(int argc, char * argv[])
     std::string empty;
     iclnuim = Parse::get().arg(argc, argv, "-icl", empty) > -1;
 
+
+    bool tryUseSlam = Parse::get().arg(argc,argv,"-rsslam",empty) > -1;
+
     // TODO adjust resolution
-    Resolution::getInstance(640, 480);
+    if(tryUseSlam)
+    { Resolution::getInstance(320, 240); }
+    else
+    { Resolution::getInstance(640, 480); }
 
 
     Parse::get().arg(argc, argv, "-l", logFile);
@@ -59,7 +65,9 @@ MainController::MainController(int argc, char * argv[])
         if(!good)
         {
           delete logReader;
-          logReader = new LiveLogReader(playbackFile, flipColors, LiveLogReader::CameraType::RealSense, recordFile);
+          LiveLogReader::CameraType cameraType = LiveLogReader::CameraType::RealSense;
+          if(tryUseSlam){ cameraType = LiveLogReader::CameraType::RealSenseSlam; }
+          logReader = new LiveLogReader(playbackFile, flipColors, cameraType, recordFile);
 
           good = ((LiveLogReader *)logReader)->cam->ok();
         }

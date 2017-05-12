@@ -32,6 +32,7 @@ if(CMAKE_CL_64)
 	find_library(RealSense_LIBRARY NAMES realsense PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
 	find_library(RealSenseSlam_LIBRARY NAMES realsense_slam PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
 	find_library(RealSenseImage_LIBRARY NAMES realsense_image PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
+	find_library(RealSenseLrsImage_LIBRARY NAMES realsense_lrs_image PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
 	find_library(RealSenseSP_Core_LIBRARY NAMES SP_Core PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
 	find_library(RealSenseTracker_LIBRARY NAMES tracker PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
 	find_library(RealSenseRecord_LIBRARY NAMES realsense_record PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/x64)
@@ -40,6 +41,7 @@ else()
 	find_library(RealSense_LIBRARY NAMES realsense PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
 	find_library(RealSenseSlam_LIBRARY NAMES realsense_slam PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
 	find_library(RealSenseImage_LIBRARY NAMES realsense_image PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
+	find_library(RealSenseLrsImage_LIBRARY NAMES realsense_lrs_image PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
 	find_library(RealSenseSP_Core_LIBRARY NAMES SP_Core PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
 	find_library(RealSenseTracker_LIBRARY NAMES tracker PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
 	find_library(RealSenseRecord_LIBRARY NAMES realsense_record PATHS $ENV{RealSense_ROOT_DIR}/lib  $ENV{RealSense_ROOT_DIR}/bin $ENV{RealSense_ROOT_DIR}/bin/Win32)
@@ -53,22 +55,22 @@ ENDIF (RealSense_INCLUDE_DIRS AND RealSense_LIBRARY)
 
 
 #SLAM
-if(REALSENSE_USE_SLAM)
-else()
-	set(RealSenseSlam_INCLUDE_DIRS "")
-endif()
+#if(REALSENSE_USE_SLAM)
+#else()
+#	set(RealSenseSlam_INCLUDE_DIRS "")
+#endif()
 
 
 IF (RealSense_FOUND)
 
-	IF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY)
+	IF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY AND RealSenseLrsImage_LIBRARY)
 		SET(RealSenseSlam_FOUND TRUE)
-	ENDIF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY)
+	ENDIF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY AND RealSenseLrsImage_LIBRARY)
 
 	IF (RealSenseSlam_FOUND)
-		IF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY)
+		IF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY AND RealSenseLrsImage_LIBRARY)
 			SET(RealSenseSlam_FOUND TRUE)
-		ENDIF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY)
+		ENDIF (RealSenseSlam_INCLUDE_DIRS AND RealSenseSlam_LIBRARY AND RealSenseImage_LIBRARY AND RealSenseSP_Core_LIBRARY AND RealSenseTracker_LIBRARY AND RealSenseLrsImage_LIBRARY)
 	ENDIF(RealSenseSlam_FOUND)
 
 	IF(RealSenseSdk_INCLUDE_DIRS)
@@ -80,6 +82,7 @@ IF (RealSense_FOUND)
 		${RealSense_LIBRARIES}
 		${RealSenseSlam_LIBRARY}
 		${RealSenseImage_LIBRARY}
+		${RealSenseLrsImage_LIBRARY}
 		${RealSenseSP_Core_LIBRARY}
 		${RealSenseTracker_LIBRARY}
 		${RealSenseRecord_LIBRARY}
