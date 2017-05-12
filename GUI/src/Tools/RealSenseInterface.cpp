@@ -170,9 +170,26 @@ RealSenseInterface::RealSenseInterface(int inWidth, int inHeight, int inFps, con
 
 		dev->enable_stream(rs::stream::depth,width,height,rs::format::z16,fps);
 		dev->set_frame_callback(rs::stream::depth,*depthCallback);
+
+		std::cout << "Hello" << std::endl;
+
+		// Enable fisheye stream for recording only
+		if(outFile && dev->get_stream_mode_count(rs::stream::fisheye) > 0)
+		{
+			dev->enable_stream(rs::stream::fisheye, width, height, rs::format::raw8, fps);
+			dev->set_frame_callback(rs::stream::fisheye, [](rs::frame frame){});
+		}
+
+		// Enable motion events for recording only
+		if(outFile && dev->supports(rs::capabilities::motion_events))
+		{
+			dev->enable_motion_tracking([](rs::motion_data motion_data){});
+			active_sources = rs::source::all_sources;
+		}
+
+		std::cout << "World" << std::endl;
 	}
 #endif
-
 
 
 	depth_intr = dev->get_stream_intrinsics(rs::stream::depth);
