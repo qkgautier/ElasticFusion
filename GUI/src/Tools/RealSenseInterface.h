@@ -51,22 +51,31 @@ public:
 	public:
 		RGBCallback(int64_t & lastRgbTime,
 				ThreadMutexObject<int> & latestRgbIndex,
-				std::pair<uint8_t *,int64_t> * rgbBuffers)
+				std::pair<uint8_t *,int64_t> * rgbBuffers,
+				rs::device * device)
 	: lastRgbTime(lastRgbTime),
 	  latestRgbIndex(latestRgbIndex),
-	  rgbBuffers(rgbBuffers)
+	  rgbBuffers(rgbBuffers),
+	  dev(device)
 	{
 	}
 
 		void operator()(rs::frame frame)
 		{
+//			auto aligned_data = reinterpret_cast<const uint8_t*>(dev->get_frame_data(rs::stream::color_aligned_to_depth));
+//
+//			std::cout << dev->get_stream_width(rs::stream::color_aligned_to_depth) << " "
+//					 << dev->get_stream_height(rs::stream::color_aligned_to_depth) << " "
+//					 << dev->get_stream_format(rs::stream::color_aligned_to_depth) << std::endl;
+//
+//			std::cout << frame.get_width() << " " << frame.get_height() << " " << frame.get_format() << std::endl << std::endl;
+
 			lastRgbTime = std::chrono::duration_cast<std::chrono::milliseconds>(
 					std::chrono::system_clock::now().time_since_epoch()).count();
 
 			int bufferIndex = (latestRgbIndex.getValue() + 1) % numBuffers;
 
-			memcpy(rgbBuffers[bufferIndex].first,frame.get_data(),
-					frame.get_width() * frame.get_height() * 3);
+			memcpy(rgbBuffers[bufferIndex].first, frame.get_data(), frame.get_width() * frame.get_height() * 3);
 
 			rgbBuffers[bufferIndex].second = lastRgbTime;
 
@@ -77,6 +86,7 @@ public:
 		int64_t & lastRgbTime;
 		ThreadMutexObject<int> & latestRgbIndex;
 		std::pair<uint8_t *,int64_t> * rgbBuffers;
+		rs::device * dev;
 	};
 
 	struct DepthCallback
@@ -197,5 +207,8 @@ public:
 
 	int64_t lastRgbTime;
 	int64_t lastDepthTime;
+
+	std::thread frames_thread;
+	bool stream_active;
 
 };
