@@ -21,12 +21,19 @@
 #include "OpenNI2Interface.h"
 #include "RealSenseInterface.h"
 
+#include <chrono>
+
+
 LiveLogReader::LiveLogReader(std::string file, bool flipColors, CameraType type, std::string outFile)
 : LogReader(file, flipColors),
   lastFrameTime(-1),
   lastGot(-1)
 {
 	std::cout << "Creating live capture... "; std::cout.flush();
+
+	std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+	creation_time = std::chrono::system_clock::to_time_t(now);
+
 
 	if(type == CameraType::OpenNI2)
 		cam = new OpenNI2Interface(Resolution::getInstance().width(),Resolution::getInstance().height());
@@ -132,7 +139,15 @@ void LiveLogReader::getNext()
 
 const std::string LiveLogReader::getFile()
 {
-	return Parse::get().baseDir().append("live");
+	std::stringstream ss;
+	ss << Parse::get().baseDir() << "_";
+
+	char mbstr[100];
+	std::strftime(mbstr, sizeof(mbstr), "%Y_%m_%d_%H_%M_%S", std::localtime(&creation_time));
+
+	ss << mbstr;
+
+	return ss.str();
 }
 
 int LiveLogReader::getNumFrames()

@@ -33,6 +33,8 @@
 #include "LogReader.h"
 #include "CameraInterface.h"
 
+#include <ctime>
+
 class LiveLogReader : public LogReader
 {
 public:
@@ -83,6 +85,7 @@ public:
 private:
 	int64_t lastFrameTime;
 	int lastGot;
+	std::time_t creation_time;
 };
 
 #endif /* LIVELOGREADER_H_ */
