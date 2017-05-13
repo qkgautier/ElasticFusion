@@ -113,8 +113,8 @@ public:
 			int bufferIndex = (latestDepthIndex.getValue() + 1) % numBuffers;
 
 			// The multiplication by 2 is here because the depth is actually uint16_t
-			memcpy(frameBuffers[bufferIndex].first.first, data,
-					height * width * 2);
+//			std::copy((const uint8_t*)data, (const uint8_t*)data + height * width * 2, frameBuffers[bufferIndex].first.first);
+			memcpy(frameBuffers[bufferIndex].first.first, data, height * width * 2);
 
 			frameBuffers[bufferIndex].second = lastDepthTime;
 
@@ -127,8 +127,8 @@ public:
 
 			lastImageVal %= numBuffers;
 
-			memcpy(frameBuffers[bufferIndex].first.second,rgbBuffers[lastImageVal].first,
-					height * width * 3);
+//			std::copy(rgbBuffers[lastImageVal].first, rgbBuffers[lastImageVal].first + height * width * 3, frameBuffers[bufferIndex].first.second);
+			memcpy(frameBuffers[bufferIndex].first.second, rgbBuffers[lastImageVal].first, height * width * 3);
 
 			latestDepthIndex++;
 		}
@@ -138,12 +138,10 @@ public:
 			setImageData(frame.get_data(), frame.get_width(), frame.get_height());
 		}
 
-#ifdef WITH_REALSENSE_SLAM
 		void setImageInterface(rs::core::image_interface* image)
 		{
 			setImageData(image->query_data(), image->query_info().width, image->query_info().height);
 		}
-#endif
 
 	private:
 		int64_t & lastDepthTime;
@@ -171,10 +169,16 @@ public:
 	public:
 		void module_output_ready(rs::core::video_module_interface * sender, rs::core::correlated_sample_set * sample);
 		void setDepthCallback(DepthCallback * callback){ depthCallback = callback; }
+		void setLatestDepthIndex(ThreadMutexObject<int> * index){ latestDepthIndex_slam = index; }
+		void setPoseBuffer(Pose* buffer){ poses_slam = buffer; }
 	private:
 		rs::slam::PoseMatrix4f pose;
 		DepthCallback * depthCallback;
+		ThreadMutexObject<int> * latestDepthIndex_slam;
+		Pose* poses_slam;
 	};
+
+	virtual bool hasPose(){ return useSlam; }
 #endif
 
 	private:
@@ -196,6 +200,7 @@ public:
 	std::unique_ptr<rs::slam::slam> slam;
 	slam_event_handler slamEventHandler;
 	rs::core::video_module_interface::actual_module_config slam_config;
+	bool useSlam;
 #endif
 #endif
 

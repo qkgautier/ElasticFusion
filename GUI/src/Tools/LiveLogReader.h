@@ -35,51 +35,54 @@
 
 class LiveLogReader : public LogReader
 {
-	public:
-    enum CameraType
-    {
-      OpenNI2,RealSense,RealSenseSlam
-    };
+public:
+	enum CameraType
+	{
+		OpenNI2,RealSense,RealSenseSlam
+	};
 
-		LiveLogReader(std::string file, bool flipColors, CameraType type, std::string outFile = "");
+	LiveLogReader(std::string file, bool flipColors, CameraType type, std::string outFile = "");
 
-		virtual ~LiveLogReader();
+	virtual ~LiveLogReader();
 
-        void getNext();
+	void getNext();
 
-        int getNumFrames();
+	int getNumFrames();
 
-        bool hasMore();
+	bool hasMore();
 
-        bool rewound()
-        {
-            return false;
-        }
+	bool rewound()
+	{
+		return false;
+	}
 
-        void rewind()
-        {
+	void rewind()
+	{
 
-        }
+	}
 
-        void getBack()
-        {
+	void getBack()
+	{
 
-        }
+	}
 
-        void fastForward(int frame)
-        {
+	void fastForward(int frame)
+	{
 
-        }
+	}
 
-        const std::string getFile();
+	const std::string getFile();
 
-        void setAuto(bool value);
+	void setAuto(bool value);
 
-		CameraInterface * cam;
+    virtual bool hasPose(){ return cam->hasPose(); }
 
-	private:
-		int64_t lastFrameTime;
-		int lastGot;
+
+	CameraInterface * cam;
+
+private:
+	int64_t lastFrameTime;
+	int lastGot;
 };
 
 #endif /* LIVELOGREADER_H_ */

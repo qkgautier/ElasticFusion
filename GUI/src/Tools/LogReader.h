@@ -50,7 +50,9 @@ class LogReader
            width(Resolution::getInstance().width()),
            height(Resolution::getInstance().height()),
            numPixels(width * height)
-        {}
+        {
+        	pose = Eigen::Matrix4f::Identity();
+        }
 
         virtual ~LogReader()
         {}
@@ -73,11 +75,14 @@ class LogReader
 
         virtual void setAuto(bool value) = 0;
 
+        virtual bool hasPose(){ return false; }
+
         bool flipColors;
         int64_t timestamp;
 
         unsigned short * depth;
         unsigned char * rgb;
+        Eigen::Matrix4f pose;
         int currentFrame;
 
     protected:

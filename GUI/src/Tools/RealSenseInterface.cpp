@@ -55,10 +55,6 @@ void RealSenseInterface::slam_event_handler::module_output_ready(
 	// Get a handle to the slam module
 	auto slam = dynamic_cast<rs::slam::slam*>(sender);
 
-	// Get the camera pose
-
-	slam->get_camera_pose(pose);
-
     // Get the tracking accuracy as a string
 	const std::string trackingAccuracy = tracking_accuracy_to_string(slam->get_tracking_accuracy());
 
@@ -68,6 +64,32 @@ void RealSenseInterface::slam_event_handler::module_output_ready(
 	if(sample->images[(int)rs::core::stream_type::depth])
 	{
 		depthCallback->setImageInterface(sample->images[(int)rs::core::stream_type::depth]);
+
+
+		// Get the camera pose;
+		rs::core::status status = slam->get_camera_pose(pose);
+		if(status != rs::core::status_no_error)
+		{
+			std::cerr << "Error retrieving the pose." << std::endl;
+		}
+
+	    int lastDepth = latestDepthIndex_slam->getValue();
+	    int bufferIndex = lastDepth % numBuffers;
+//	    std::copy(std::begin(pose.m_data), std::end(pose.m_data), std::begin(poses_slam[bufferIndex].data));
+//	    std::copy(pose.m_data, pose.m_data + 16, poses_slam[bufferIndex].data);
+	    for(int i = 0; i < 16; i++)
+	    {
+	    	std::cout << pose.m_data[i] << " ";
+	    	poses_slam[bufferIndex].data[i] = pose.m_data[i];
+	    }
+	    std::cout << endl;
+
+	    std::cout << bufferIndex << ": ";
+	    for(int i = 0; i < 16; i++)
+	    {
+	    	std::cout << poses_slam[bufferIndex].data[i] << " ";
+	    }
+	    std::cout << endl;
 	}
 }
 #endif
@@ -126,6 +148,11 @@ RealSenseInterface::RealSenseInterface(int inWidth, int inHeight, int inFps, con
 		frameBuffers[i] = std::pair<std::pair<uint8_t *,uint8_t *>,int64_t>(std::pair<uint8_t *,uint8_t *>(newDepth,newImage),0);
 	}
 
+	for(int i = 0; i < numBuffers; i++)
+	{
+		poses[i] = Pose::Identity();
+	}
+
 	rgbCallback = new RGBCallback(lastRgbTime,
 			latestRgbIndex,
 			rgbBuffers,
@@ -146,13 +173,15 @@ RealSenseInterface::RealSenseInterface(int inWidth, int inHeight, int inFps, con
 
 #ifdef WITH_REALSENSE_SLAM
 
-	bool useSlam = tryUseSlam;
+	useSlam = tryUseSlam;
 
 	if(useSlam)
 	{
 		slam.reset(new rs::slam::slam());
 		slam->register_event_handler(&slamEventHandler);
 		slamEventHandler.setDepthCallback(depthCallback);
+		slamEventHandler.setLatestDepthIndex(&latestDepthIndex);
+		slamEventHandler.setPoseBuffer(poses);
 
 		rs::core::video_module_interface::supported_module_config supported_slam_config = {};
 		if (slam->query_supported_module_config(0, supported_slam_config) < rs::core::status_no_error)

@@ -311,6 +311,11 @@ void MainController::run()
                     *currentPose = groundTruthOdometry->getTransformation(logReader->timestamp);
                 }
 
+                if(logReader->hasPose())
+                {
+                	std::cout << logReader->pose << std::endl;
+                }
+
                 eFusion->processFrame(logReader->rgb, logReader->depth, logReader->timestamp, currentPose, weightMultiplier);
 
                 if(currentPose)
