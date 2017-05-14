@@ -138,10 +138,12 @@ public:
 			setImageData(frame.get_data(), frame.get_width(), frame.get_height());
 		}
 
+#ifdef WITH_REALSENSE_SDK
 		void setImageInterface(rs::core::image_interface* image)
 		{
 			setImageData(image->query_data(), image->query_info().width, image->query_info().height);
 		}
+#endif
 
 	private:
 		int64_t & lastDepthTime;
@@ -184,10 +186,10 @@ public:
 	private:
 #ifdef WITH_REALSENSE
 	rs::device * dev;
+	rs::source active_sources;
 
 #ifdef WITH_REALSENSE_SDK
 	rs::core::context_interface * ctx;
-	rs::source active_sources;
 #else
 	rs::context * ctx;
 #endif
