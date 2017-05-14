@@ -300,7 +300,10 @@ RealSenseInterface::~RealSenseInterface()
 			frames_thread.join();
 		}
 
+#ifdef WITH_REALSENSE_SLAM
 		if(slam){ slam->flush_resources(); }
+#endif
+
 		dev->stop(active_sources);
 
 
