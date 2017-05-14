@@ -150,6 +150,7 @@ class OpenNI2Interface : public CameraInterface
 
         openni::VideoStream depthStream;
         openni::VideoStream rgbStream;
+	openni::Recorder recordStream;
 
         //Map for formats from OpenNI2
         std::map<int, std::string> formatMap;

@@ -95,6 +95,34 @@ OpenNI2Interface::OpenNI2Interface(int inWidth, int inHeight, int fps)
                 initSuccessful = false;
             }
 
+	    std::string fileName = "test.oni";
+
+	    rc  = recordStream.create(fileName.c_str());
+            if (rc != openni::STATUS_OK)
+            {
+		errorText.append("Recorder create failed: ");
+              	errorText.append(openni::OpenNI::getExtendedError());
+		initSuccessful = false;
+            }
+            if (recordStream.isValid())
+            {
+            	rc = recordStream.attach(rgbStream, true);
+            	if (rc != openni::STATUS_OK)
+            	{
+		   errorText.append("ColorStream attach failed: ");
+                   errorText.append(openni::OpenNI::getExtendedError());
+		   initSuccessful = false;
+              	}
+             	rc = recordStream.attach(depthStream, false);
+            	if (rc != openni::STATUS_OK)
+            	{
+		   errorText.append("DepthStream attach failed: ");
+                   errorText.append(openni::OpenNI::getExtendedError());
+		   initSuccessful = false;
+            	}
+            	recordStream.start();
+	   }
+
             if (!depthStream.isValid() || !rgbStream.isValid())
             {
                 errorText.append(openni::OpenNI::getExtendedError());
@@ -169,8 +197,10 @@ OpenNI2Interface::~OpenNI2Interface()
 
         depthStream.stop();
         rgbStream.stop();
+	recordStream.stop();
         depthStream.destroy();
         rgbStream.destroy();
+	recordStream.destroy();
         device.close();
         openni::OpenNI::shutdown();
 
