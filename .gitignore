@@ -4,3 +4,4 @@ deps/
 .cproject
 .settings
 *.user
+GUI_*

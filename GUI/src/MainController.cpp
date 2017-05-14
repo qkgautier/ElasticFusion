@@ -33,10 +33,14 @@ MainController::MainController(int argc, char * argv[])
 
 
     bool tryUseSlam = Parse::get().arg(argc,argv,"-rsslam",empty) > -1;
+    
+	bool useKinectOne = Parse::get().arg(argc,argv,"-k2",empty) > -1;
 
     // TODO adjust resolution
     if(tryUseSlam)
     { Resolution::getInstance(320, 240); }
+	else if(useKinectOne)
+	{ Resolution::getInstance(512, 424); }
     else
     { Resolution::getInstance(640, 480); }
 
