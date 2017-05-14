@@ -28,11 +28,12 @@
 
 #include "ThreadMutexObject.h"
 #include "CameraInterface.h"
+#include "LiveLogReader.h"
 
 class OpenNI2Interface : public CameraInterface
 {
     public:
-        OpenNI2Interface(int inWidth = 640, int inHeight = 480, int fps = 30);
+        OpenNI2Interface(std::time_t creation_time, int inWidth = 640, int inHeight = 480, int fps = 30);
         virtual ~OpenNI2Interface();
 
         const int width, height, fps;

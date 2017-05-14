@@ -18,7 +18,7 @@
 
 #include "OpenNI2Interface.h"
 
-OpenNI2Interface::OpenNI2Interface(int inWidth, int inHeight, int fps)
+OpenNI2Interface::OpenNI2Interface(std::time_t creation_time, int inWidth, int inHeight, int fps)
  : width(inWidth),
    height(inHeight),
    fps(fps),
@@ -95,9 +95,15 @@ OpenNI2Interface::OpenNI2Interface(int inWidth, int inHeight, int fps)
                 initSuccessful = false;
             }
 
-	    std::string fileName = "test.oni";
+	    std::stringstream ss;
+	    ss << Parse::get().baseDir() << "_";
 
-	    rc  = recordStream.create(fileName.c_str());
+	    char mbstr[100];
+	    std::strftime(mbstr, sizeof(mbstr), "%Y_%m_%d_%H_%M_%S.oni", std::localtime(&creation_time));
+
+	    ss << mbstr;
+
+	    rc  = recordStream.create(ss.str().c_str());
             if (rc != openni::STATUS_OK)
             {
 		errorText.append("Recorder create failed: ");
