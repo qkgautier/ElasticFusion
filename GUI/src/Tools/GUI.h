@@ -166,6 +166,10 @@ class GUI
             {
                 pangolin::RegisterKeyPressCallback(' ', pangolin::SetVarFunctor<bool>("ui.Reset", true));
             }
+            
+	    pangolin::RegisterKeyPressCallback('f', pangolin::ToggleFullscreen);
+
+	    pangolin::SetFullscreen(true);
         }
 
         virtual ~GUI()
