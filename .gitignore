@@ -5,3 +5,4 @@ deps/
 .settings
 *.user
 GUI_*
+record_*
