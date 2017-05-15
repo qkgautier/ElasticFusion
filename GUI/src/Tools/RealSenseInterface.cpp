@@ -334,6 +334,12 @@ void RealSenseInterface::setAutoWhiteBalance(bool value)
 	dev->set_option(rs::option::color_enable_auto_white_balance,value);
 }
 
+void RealSenseInterface::setIRAutoExposure(bool value)
+{
+	try{ dev->set_option(rs::option::r200_lr_auto_exposure_enabled, value); }
+	catch(...){}
+}
+
 bool RealSenseInterface::getAutoExposure()
 {
 	return dev->get_option(rs::option::color_enable_auto_exposure);
@@ -342,6 +348,12 @@ bool RealSenseInterface::getAutoExposure()
 bool RealSenseInterface::getAutoWhiteBalance()
 {
 	return dev->get_option(rs::option::color_enable_auto_white_balance);
+}
+
+bool RealSenseInterface::getIRAutoExposure()
+{
+	try{ return dev->get_option(rs::option::r200_lr_auto_exposure_enabled); }
+	catch(...){ return false; }
 }
 
 #else
@@ -367,12 +379,21 @@ void RealSenseInterface::setAutoWhiteBalance(bool value)
 {
 }
 
+void RealSenseInterface::setIRAutoExposure(bool value)
+{
+}
+
 bool RealSenseInterface::getAutoExposure()
 {
 	return false;
 }
 
 bool RealSenseInterface::getAutoWhiteBalance()
+{
+	return false;
+}
+
+bool RealSenseInterface::getIRAutoExposure()
 {
 	return false;
 }

@@ -32,8 +32,10 @@ public:
 
 	bool getAutoExposure();
 	bool getAutoWhiteBalance();
+	bool getIRAutoExposure();
 	virtual void setAutoExposure(bool value);
 	virtual void setAutoWhiteBalance(bool value);
+	void setIRAutoExposure(bool value);
 
 	virtual bool ok()
 	{

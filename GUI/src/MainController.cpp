@@ -17,6 +17,7 @@
  */
  
 #include "MainController.h"
+#include "Tools/RealSenseInterface.h"
 
 MainController::MainController(int argc, char * argv[])
  : good(true),
@@ -34,7 +35,7 @@ MainController::MainController(int argc, char * argv[])
 
     bool tryUseSlam = Parse::get().arg(argc,argv,"-rsslam",empty) > -1;
     
-	bool useKinectOne = Parse::get().arg(argc,argv,"-k2",empty) > -1;
+    bool useKinectOne = Parse::get().arg(argc,argv,"-k2",empty) > -1;
 
     // TODO adjust resolution
     if(tryUseSlam)
@@ -74,6 +75,12 @@ MainController::MainController(int argc, char * argv[])
           logReader = new LiveLogReader(playbackFile, flipColors, cameraType, recordFile);
 
           good = ((LiveLogReader *)logReader)->cam->ok();
+
+	  if(good)
+	  {
+              bool noAutoIR = Parse::get().arg(argc,argv,"-nair",empty) > -1;
+              ((RealSenseInterface*)((LiveLogReader *)logReader)->cam)->setIRAutoExposure(!noAutoIR);
+	  }
         }
 #endif
     }
